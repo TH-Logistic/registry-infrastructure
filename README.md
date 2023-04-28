@@ -5,16 +5,9 @@
 # Prerequisite
 - Terraform CLI installation on local machine
 - AWS Token: include `ACCESS KEY`, `SECRET KEY` & `TOKEN` (If exists)
-- A forked [registry service repoistory](https://github.com/thinhlh/registry-service)
+- A domain
 
 # Provision infrastructure
-
-## With forked repo
-    1. Clone the repo
-    2. Replace all `registry.thinhlh.com` to `registry.yourdomain.com`
-    3. Commit & push new version
-
-## With this repo
 
 1. Create and fill the .tfvars file
 
@@ -39,26 +32,19 @@
     terraform apply --var-file ./.tfvars
     ```
 
-4. Copy instance public ip at output and set DNS record point to IP
+4. Copy instance public ip at output and set DNS A record point to IP address
 
-5. Replace fields in [post-provisioning-script](./scripts/post-provisioning.sh)
-    - DNS domain name
-    - Email
-    - Path to key file
-    - Public IP Address you received from infra
+5. Run [post-provisioning-script](./scripts/post-provisioning.sh) after DNS lookup found records
     
-    ```
-    EMAIL=example@gmail.com
-    DOMAIN=registry.example.com
-    public_ip=1.1.1.1
-    key.pem=/path/to/your/key
-    ```
 
-6. Run shell script
+6. Run shell script with 2 variables:
+    - Your registered domain 
+    - Your email
+
     ```
-    ./scripts/post-provisioning.sh
+    ./scripts/post-provisioning.sh registry.registered-domain.com thinhlh0812@gmail.com
     ```
 # How to healthcheck? Go to domain below
 ```
-https://registry.example.com/v2/_catalog
+https://registry.registered-domain.com/v2/_catalog
 ```
