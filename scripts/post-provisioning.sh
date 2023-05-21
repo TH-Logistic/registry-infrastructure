@@ -1,7 +1,22 @@
+DOMAIN=$1 # Specify your domain name. E.g: registry.example.com
+EMAIL=$2
 
-DOMAIN=registry.thinhlh.com
-REPLACE_STRING_REGEX="s/www.thinhlh.com/$DOMAIN/g"
-grep -rl 'www.thinhlh.com' remote-folder-structure | xargs sed -i $REPLACE_STRING_REGEX
+if [ -n "$DOMAIN" ]; then
+    echo "Domain: $DOMAIN"
+else
+    echo "Domain not found!"
+    exit 1
+fi
+
+if [ -n "$EMAIL" ]; then
+    echo "Email: $EMAIL"
+else
+    echo "Email not found!"
+    exit 1
+fi
+
+REPLACE_STRING_REGEX="s/registry.thinhlh.com/$DOMAIN/g"
+grep -rl 'registry.thinhlh.com' remote-folder-structure | xargs sed -i $REPLACE_STRING_REGEX
 
 # For story temp vars inside loop
 TEMP_VARS_FILE=temp-vars.sh
@@ -19,8 +34,6 @@ source $TEMP_VARS_FILE
 REMOTE_USER=ubuntu
 INSTANCE_IP=$instance_public_ip
 KEY_PAIR_NAME=$key_pair_name
-DOMAIN=$1 # Specify your domain name. E.g: registry.example.com
-EMAIL=$2
 
 rm $TEMP_VARS_FILE
 
@@ -36,9 +49,9 @@ ssh -i $KEY_PAIR_NAME.pem -T ubuntu@$INSTANCE_IP << 'EOL'
 
     # Replace example domain with actual domain
 
-    REPLACE_STRING_REGEX="s/registry.thinhlh.com/$DOMAIN/g"
-    echo $REPLACE_STRING_REGEX
-    sudo grep -rl 'registry.thinhlh.com' volumes | xargs sed -i $REPLACE_STRING_REGEX
+    # REPLACE_STRING_REGEX="s/registry.thinhlh.com/$DOMAIN/g"
+    # echo $REPLACE_STRING_REGEX
+    # sudo grep -rl 'registry.thinhlh.com' volumes | xargs sed -i $REPLACE_STRING_REGEX
 
     docker compose up -d # To run nginx by default with certbot to generate certificates
     sleep 20
